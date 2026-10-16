@@ -1,0 +1,37 @@
+{
+  "name": "@hevn/dapi-sdk",
+  "version": "0.1.0",
+  "description": "Node.js SDK for the HEVN whitelabel API (/dapi/v1): developer-key sessions, intent verification and co-signing",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hevn-inc/dapi-sdk.git"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "node --test \"_tests/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "example:login": "node examples/login.ts",
+    "example:payout": "node examples/payout.ts",
+    "example:escrow": "node examples/escrow.ts"
+  },
+  "dependencies": {
+    "@noble/hashes": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
+}
