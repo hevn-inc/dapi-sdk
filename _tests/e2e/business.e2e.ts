@@ -28,9 +28,7 @@ describe('a client company against the sandbox', { skip: typeof env === 'string'
   });
 
   it('onboard.ts fills the KYB document, files the application and gets it approved', async () => {
-    // A phone already on another client is refused, so each run gives the company its own (555 numbers are fictional).
-    const phone = company.phone ?? `+1312555${String(Math.floor(Math.random() * 1e4)).padStart(4, '0')}`;
-    const out = await example(sbx, 'onboard', [company.id, phone]);
+    const out = await example(sbx, 'onboard', [company.id]);
     assert.equal(field(out, /^kyb document ready (\S+)/m), 'true');
     assert.match(out, /^kyb application kyb_\S+ \S+$/m);
     assert.equal(field(out, /^kyb status (\S+)/m), 'approved');
