@@ -100,10 +100,17 @@ export class Hevn {
     return new Hevn({ http, session, key: options.key, verifier });
   }
 
-  /** `HEVN_ENV` picks the environment; `HEVN_API_URL` points it at another host, e.g. a local backend. */
+  /**
+   * `HEVN_ENV` picks the environment. `HEVN_API_URL` and `HEVN_PRIVY_APP_ID` point it at another deployment,
+   * e.g. a local backend on its own Privy app; approvals are still verified against that app id.
+   */
   static environmentFromEnv(): Environment {
     const base = ENVIRONMENTS[process.env.HEVN_ENV === 'production' ? 'production' : 'sandbox'];
-    return process.env.HEVN_API_URL ? { ...base, apiUrl: process.env.HEVN_API_URL } : base;
+    return {
+      ...base,
+      apiUrl: process.env.HEVN_API_URL || base.apiUrl,
+      privyAppId: process.env.HEVN_PRIVY_APP_ID || base.privyAppId,
+    };
   }
 
   get environment(): Environment {

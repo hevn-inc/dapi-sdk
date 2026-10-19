@@ -131,7 +131,7 @@ Escrow prepares the action again on `410 approval_expired` and `409 approval_con
 
 ```bash
 export HEVN_KEY_PEM=./hevn-sandbox.pem HEVN_EMAIL=integrator@example.com   # HEVN_ENV=production for prod
-# HEVN_API_URL=http://localhost:8010/dapi/v1 points everything at a local backend
+# HEVN_API_URL=http://localhost:8010/dapi/v1 HEVN_PRIVY_APP_ID=<its Privy app> point everything at a local backend
 node examples/login.ts
 node examples/payout.ts cl_7YQ2Kf3mN8 ct_3K9… 0.50 0x8f3b…
 node examples/escrow.ts cl_sender cl_receiver 0.10
