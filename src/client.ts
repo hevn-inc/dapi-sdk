@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import { HexCheck } from './encoding.ts';
-import { APPROVAL_WINDOW_MS, resolveEnvironment, type Environment, type EnvironmentName } from './environment.ts';
+import { APPROVAL_WINDOW_MS, ENVIRONMENTS, resolveEnvironment, type Environment, type EnvironmentName } from './environment.ts';
 import { Http, HevnApiError, pollUntil, saveTo, Session, sleep, type Fetch, type PollOptions, type Query, type RequestOptions } from './http.ts';
 import type {
   Client,
@@ -100,8 +100,10 @@ export class Hevn {
     return new Hevn({ http, session, key: options.key, verifier });
   }
 
-  static environmentFromEnv(): EnvironmentName {
-    return process.env.HEVN_ENV === 'production' ? 'production' : 'sandbox';
+  /** `HEVN_ENV` picks the environment; `HEVN_API_URL` points it at another host, e.g. a local backend. */
+  static environmentFromEnv(): Environment {
+    const base = ENVIRONMENTS[process.env.HEVN_ENV === 'production' ? 'production' : 'sandbox'];
+    return process.env.HEVN_API_URL ? { ...base, apiUrl: process.env.HEVN_API_URL } : base;
   }
 
   get environment(): Environment {
@@ -588,8 +590,8 @@ export class Sandbox {
     return this.hevn.get<T>('/sandbox/treasury');
   }
 
-  deposit<T = unknown>(body: Record<string, unknown>): Promise<T> {
-    return this.hevn.post<T>('/sandbox/deposits', body);
+  deposit<T = unknown>(body: Record<string, unknown>, options: { idempotencyKey?: string } = {}): Promise<T> {
+    return this.hevn.post<T>('/sandbox/deposits', body, options);
   }
 
   completePayin<T = unknown>(payinId: string, body: Record<string, unknown> = {}): Promise<T> {

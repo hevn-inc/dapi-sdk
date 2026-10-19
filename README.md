@@ -131,13 +131,22 @@ Escrow prepares the action again on `410 approval_expired` and `409 approval_con
 
 ```bash
 export HEVN_KEY_PEM=./hevn-sandbox.pem HEVN_EMAIL=integrator@example.com   # HEVN_ENV=production for prod
+# HEVN_API_URL=http://localhost:8010/dapi/v1 points everything at a local backend
 node examples/login.ts
-node examples/payout.ts cl_7YQ2Kf3mN8 ct_3K9… 5.00 0x8f3b…
-node examples/escrow.ts cl_sender cl_receiver 100
+node examples/payout.ts cl_7YQ2Kf3mN8 ct_3K9… 0.50 0x8f3b…
+node examples/escrow.ts cl_sender cl_receiver 0.10
+node examples/sandbox-transfer.ts cl_a cl_b 0.10   # a sandbox faucet credit to A, then a transfer A → B
 
 npm test
 npm run typecheck
+npm run test:e2e                             # runs every example against the live sandbox
 ```
+
+`npm run test:e2e` runs the examples as they are, as child processes, and checks balances through the
+SDK afterwards. The harness lives in `_tests/e2e/harness.ts`. It reads `HEVN_EMAIL` and `HEVN_KEY_PEM`
+from the environment or `./.env`, and `HEVN_KEY_PEM` there may also hold the PEM inline. It runs on the
+first two ready clients of `GET /clients` and moves `0.10` USDC per step, inside the sandbox limits: at most 1
+per payout or escrow, and a faucet that only tops up a wallet holding less than 1.
 
 The payload and hash vectors in `_tests/fixtures.ts` come from HEVN's own server-side encoder, so a
 change on either side shows up as a failing test.

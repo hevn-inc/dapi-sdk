@@ -22,10 +22,12 @@
   },
   "scripts": {
     "test": "node --test \"_tests/**/*.test.ts\"",
+    "test:e2e": "node --test --test-concurrency=1 \"_tests/e2e/*.e2e.ts\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "example:login": "node examples/login.ts",
     "example:payout": "node examples/payout.ts",
-    "example:escrow": "node examples/escrow.ts"
+    "example:escrow": "node examples/escrow.ts",
+    "example:sandbox-transfer": "node examples/sandbox-transfer.ts"
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1"
