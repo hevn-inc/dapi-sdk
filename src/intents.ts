@@ -1,7 +1,7 @@
 export type Hex = `0x${string}`;
 export type MoneyAmount = string;
 export type ClientId = `cl_${string}`;
-export type AccountKey = 'USDC' | 'EURC' | 'FDIC_USD' | (string & {});
+export type AccountKey = 'USDC' | 'EURC' | 'USDC_ARB' | 'FDIC_USD' | (string & {});
 
 export type AuthorizationKind = 'debit' | 'intent';
 export type SettlementMode = 'message_signature' | 'order_signature';

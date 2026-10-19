@@ -44,6 +44,18 @@ describe('examples against the sandbox', { skip: typeof env === 'string' ? env :
     assert.equal(await usdcChange(hevn, b.id, bBefore, -Number(AMOUNT)), -Number(AMOUNT));
   });
 
+  it('arb-account.ts finds USDC_ARB on by default at the same wallet address, and refuses to spend from it', async () => {
+    const out = await example(sbx, 'arb-account', [a.id, AMOUNT]);
+    assert.match(out, /^account USDC_ARB \d+\.\d+ \d+\.\d+$/m);
+    const [, chain, address, wallet, settlement] = out.match(/^deposit USDC on (\S+) \d+ token (0x[0-9a-fA-F]{40}) to (\S+) settlement (\S+)$/m) ?? [];
+    assert.equal(chain, 'arb', out);
+    assert.ok(address, out);
+    assert.equal(wallet, a.baseSmartWallet);
+    assert.equal(settlement, 'false');
+    assert.match(out, /^ledger USDC_ARB rows \d+$/m);
+    assert.match(out, /^swap from USDC_ARB refused 422 account_not_supported$/m);
+  });
+
   // A ends each run where it started, so the faucet (wallets under 1 USDC only) keeps funding it.
   it(`escrow.ts authorizes and captures ${AMOUNT} USDC from A to B`, async () => {
     const [aBefore, bBefore] = [await usdc(hevn, a.id), await usdc(hevn, b.id)];
