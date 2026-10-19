@@ -142,15 +142,7 @@ export interface Swap extends CoSignable {
 
 export type EscrowVerb = 'authorize' | 'charge' | 'capture' | 'void' | 'refund' | 'reclaim';
 export type EscrowAction = EscrowVerb | 'approve' | 'reject';
-export type EscrowActionStatus =
-  | 'awaitingSignature'
-  | 'signing'
-  | 'submitted'
-  | 'confirmed'
-  | 'reverted'
-  | 'failed'
-  | 'superseded'
-  | 'dropped';
+export type EscrowActionStatus = 'awaitingSignature' | 'signing' | 'submitted' | 'confirmed' | 'reverted' | 'failed' | 'superseded' | 'dropped';
 
 export interface EscrowCreateInput {
   senderClientId: ClientId;
@@ -223,7 +215,10 @@ export interface Tokens {
 export interface Client {
   id: ClientId;
   status: string;
+  name?: string;
   email?: string | null;
+  phone?: string | null;
+  kybStatus?: string;
   baseSmartWallet?: Hex | null;
   [field: string]: unknown;
 }

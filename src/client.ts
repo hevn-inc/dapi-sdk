@@ -220,7 +220,8 @@ export class Hevn {
       const signature = this.key.signBytes(decoded.bytes);
       try {
         const receipt = await this.confirmUntilSettled(confirmPath(prepared), signature, options);
-        if (receipt.status !== 'failed' || attempt >= (options.reopenAttempts ?? 2)) return { prepared, receipt: { ...receipt, id: receipt.id || prepared.id } };
+        if (receipt.status !== 'failed' || attempt >= (options.reopenAttempts ?? 2))
+          return { prepared, receipt: { ...receipt, id: receipt.id || prepared.id } };
       } catch (error) {
         if (!(error instanceof ReopenRequired) || attempt >= (options.reopenAttempts ?? 2)) throw error;
       }
@@ -384,10 +385,10 @@ export class Escrow {
   }
 
   confirm(escrowId: string, idempotencyKey: string, signature: string): Promise<EscrowActionResult> {
-    return this.unbound().post<EscrowActionResult>(
-      `/escrow/${encodeURIComponent(escrowId)}/actions/${encodeURIComponent(idempotencyKey)}/confirm`,
-      { signature, publicKey: this.hevn.key.publicKey },
-    );
+    return this.unbound().post<EscrowActionResult>(`/escrow/${encodeURIComponent(escrowId)}/actions/${encodeURIComponent(idempotencyKey)}/confirm`, {
+      signature,
+      publicKey: this.hevn.key.publicKey,
+    });
   }
 
   async open(input: EscrowCreateInput, options: FlowOptions & { poll?: PollOptions } = {}): Promise<EscrowActionResult> {
@@ -605,8 +606,12 @@ export class Sandbox {
     return this.hevn.post<T>(`/sandbox/payins/${encodeURIComponent(payinId)}/complete`, body);
   }
 
+  /** Plays the compliance reviewer on the client's latest KYB application: `approved`, or `rfi` / `rejected` with a comment. */
+  kybStatus<T = unknown>(body: { status: 'approved' | 'rfi' | 'rejected'; comment?: string }): Promise<T> {
+    return this.hevn.post<T>('/sandbox/kyb/status', body);
+  }
+
   payoutStatus<T = unknown>(payoutId: string, body: Record<string, unknown>): Promise<T> {
     return this.hevn.post<T>(`/sandbox/payouts/${encodeURIComponent(payoutId)}/status`, body);
   }
 }
-

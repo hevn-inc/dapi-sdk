@@ -41,7 +41,8 @@ function loginHandlers(): Record<string, Handler> {
   return {
     'POST /auth/challenge': ({ body }) => {
       const proof = Buffer.from(`hevn-developer-key-login:${body!.email}:${body!.nonce}:${body!.requestExpiry}`);
-      if (!PublicKeys.verifies(String(body!.publicKey), String(body!.signature), proof)) return { status: 401, body: { error: { code: 'invalid_credentials' } } };
+      if (!PublicKeys.verifies(String(body!.publicKey), String(body!.signature), proof))
+        return { status: 401, body: { error: { code: 'invalid_credentials' } } };
       const expiry = Number(body!.requestExpiry);
       return {
         status: 200,
@@ -66,7 +67,10 @@ describe('Hevn', () => {
     const { calls, fetchImpl } = fakeApi({ ...loginHandlers(), 'GET /clients?limit=1': () => ({ status: 200, body: { items: [] } }) });
     const hevn = Hevn.connect({ key, email: EMAIL, environment: 'sandbox', fetch: fetchImpl, now: () => NOW });
     await hevn.clients.list({ limit: 1 });
-    assert.deepEqual(calls.map((call) => `${call.method} ${call.path}`), ['POST /auth/challenge', 'POST /auth/token', 'GET /clients?limit=1']);
+    assert.deepEqual(
+      calls.map((call) => `${call.method} ${call.path}`),
+      ['POST /auth/challenge', 'POST /auth/token', 'GET /clients?limit=1'],
+    );
     assert.equal(calls[2].headers.authorization, 'Bearer at-1');
     assert.equal(calls[2].headers['x-hevn-account'], undefined);
   });
@@ -77,7 +81,11 @@ describe('Hevn', () => {
         status: 200,
         body: {
           challengeId: 'c1',
-          payload: payload({ message: `I am the owner of victim@example.com ${body!.nonce}`, expiry: Number(body!.requestExpiry), idempotencyKey: `developer-key-login:1:${body!.nonce}` }),
+          payload: payload({
+            message: `I am the owner of victim@example.com ${body!.nonce}`,
+            expiry: Number(body!.requestExpiry),
+            idempotencyKey: `developer-key-login:1:${body!.nonce}`,
+          }),
           expiresAt: new Date(Number(body!.requestExpiry)).toISOString(),
         },
       }),
@@ -120,15 +128,23 @@ describe('Hevn', () => {
     const hijacked = debitPayout({ debit: { ...debitPayout().debit!, address: '0x2222222222222222222222222222222222222222' } });
     const { calls, fetchImpl } = fakeApi({ ...loginHandlers(), 'POST /payouts': () => ({ status: 201, body: hijacked }) });
     const hevn = Hevn.connect({ key, email: EMAIL, environment: SANDBOX, fetch: fetchImpl, now: () => NOW });
-    const sending = hevn.actingAs('cl_7YQ2Kf3mN8').payouts.send({ contactId: 'ct_1', amount: '5' }, { debit: { token: 'USDC', amount: '5', address: RECIPIENT } });
+    const sending = hevn
+      .actingAs('cl_7YQ2Kf3mN8')
+      .payouts.send({ contactId: 'ct_1', amount: '5' }, { debit: { token: 'USDC', amount: '5', address: RECIPIENT } });
     await assert.rejects(sending, { code: 'debit_mismatch' });
-    assert.equal(calls.some((call) => call.path.endsWith('/confirm')), false);
+    assert.equal(
+      calls.some((call) => call.path.endsWith('/confirm')),
+      false,
+    );
   });
 
   it('re-opens with the same idempotency key when the approval expired unsigned', async () => {
     const { calls, fetchImpl } = fakeApi({
       ...loginHandlers(),
-      'POST /payouts': [() => ({ status: 201, body: debitPayout() }), () => ({ status: 200, body: debitPayout({ approval: approval({ expiry: NOW + 100_000 }) }) })],
+      'POST /payouts': [
+        () => ({ status: 201, body: debitPayout() }),
+        () => ({ status: 200, body: debitPayout({ approval: approval({ expiry: NOW + 100_000 }) }) }),
+      ],
       'POST /payouts/po_1/confirm': [
         () => ({ status: 409, body: { error: { code: 'funding_attempt_expired' } } }),
         () => ({ status: 409, body: { error: { code: 'already_funded', details: { transactionHash: '0xdone' } } } }),
@@ -139,7 +155,10 @@ describe('Hevn', () => {
     assert.equal(receipt.status, 'settled');
     assert.equal(receipt.transactionHash, '0xdone');
     const opens = calls.filter((call) => call.path === '/payouts');
-    assert.deepEqual(opens.map((call) => call.headers['idempotency-key']), ['pay-2', 'pay-2']);
+    assert.deepEqual(
+      opens.map((call) => call.headers['idempotency-key']),
+      ['pay-2', 'pay-2'],
+    );
   });
 
   it('re-mints the session once on 401 and surfaces API errors with their code', async () => {

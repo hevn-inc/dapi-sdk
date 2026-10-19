@@ -36,16 +36,30 @@ export function connect(env: Sandbox): Hevn {
 
 /** Runs `node examples/<name>.ts ...args` and returns its stdout; a non-zero exit fails with the example's output attached. */
 export async function example(env: Sandbox, name: string, args: string[] = []): Promise<string> {
+  const { code, output } = await spawnExample(env, name, args);
+  if (code !== 0) assert.fail(`examples/${name}.ts failed\n${output}`);
+  return output;
+}
+
+/** Runs an example that is expected to refuse, and returns its output; any other exit code fails. */
+export async function exampleRefusal(env: Sandbox, name: string, args: string[], exitCode: number): Promise<string> {
+  const { code, output } = await spawnExample(env, name, args);
+  assert.equal(code, exitCode, `examples/${name}.ts exited ${code}, expected ${exitCode}\n${output}`);
+  return output;
+}
+
+async function spawnExample(env: Sandbox, name: string, args: string[]): Promise<{ code: number; output: string }> {
   try {
     const { stdout } = await run(process.execPath, [`examples/${name}.ts`, ...args], {
       env: { ...process.env, HEVN_KEY_PEM: env.keyPath, HEVN_EMAIL: env.email, HEVN_ENV: 'sandbox' }, // HEVN_API_URL passes through
       timeout: 540_000,
     });
     process.stdout.write(stdout.replace(/^/gm, `  [${name}] `));
-    return stdout;
+    return { code: 0, output: stdout };
   } catch (error) {
-    const { stdout = '', stderr = '' } = error as { stdout?: string; stderr?: string };
-    assert.fail(`examples/${name}.ts failed\n${stdout}${stderr}`);
+    const { code, stdout = '', stderr = '' } = error as { code?: number | string; stdout?: string; stderr?: string };
+    process.stdout.write(`${stdout}${stderr}`.replace(/^/gm, `  [${name}] `));
+    return { code: typeof code === 'number' ? code : -1, output: `${stdout}${stderr}` };
   }
 }
 
@@ -56,12 +70,24 @@ export function field(output: string, pattern: RegExp): string {
   return value;
 }
 
-/** The first two ready clients from `GET /clients`; the run reuses them instead of creating new ones. */
-export async function existingClients(hevn: Hevn): Promise<[Client, Client]> {
+/** The first `count` ready clients from `GET /clients`; the run reuses them instead of creating new ones. */
+export async function existingClients(hevn: Hevn, count = 2): Promise<Client[]> {
   const { items } = await hevn.clients.list({ limit: 50 });
   const ready = items.filter((client) => client.status === 'ready' && client.baseSmartWallet);
-  assert.ok(ready.length >= 2, `need two ready clients in the sandbox, found ${ready.length}`);
-  return [ready[0]!, ready[1]!];
+  assert.ok(ready.length >= count, `need ${count} ready clients in the sandbox, found ${ready.length}`);
+  return ready.slice(0, count);
+}
+
+/** Tops the integrator's own wallet up from the faucet when it holds less than `atLeast` USDC: escrow refunds are paid from it. */
+export async function fundOwnWallet(hevn: Hevn, atLeast: number): Promise<void> {
+  const me = await hevn.me();
+  if ((await usdc(hevn, me.clientId!)) >= atLeast * 1e6) return;
+  const idempotencyKey = `e2e-operator-${Date.now()}`; // one key, so a repeated 202 resumes the same credit
+  await pollUntil(
+    () => me.sandbox.deposit<{ status: string }>({ amount: '1.00', token: 'USDC' }, { idempotencyKey }),
+    (credit) => credit.status !== 'submitted',
+    { deadlineMs: 180_000 },
+  );
 }
 
 interface Balance {
@@ -77,8 +103,10 @@ export async function usdc(hevn: Hevn, clientId: ClientId): Promise<number> {
 /** Waits until the client's USDC balance moves by `delta` (USDC) from `before`, then returns the actual move. */
 export async function usdcChange(hevn: Hevn, clientId: ClientId, before: number, delta: number): Promise<number> {
   const target = before + Math.round(delta * 1e6);
-  const after = await pollUntil(() => usdc(hevn, clientId), (seen) => seen === target, { firstMs: 2_000, deadlineMs: 180_000 }).catch(() =>
-    usdc(hevn, clientId),
-  );
+  const after = await pollUntil(
+    () => usdc(hevn, clientId),
+    (seen) => seen === target,
+    { firstMs: 2_000, deadlineMs: 180_000 },
+  ).catch(() => usdc(hevn, clientId));
   return (after - before) / 1e6;
 }

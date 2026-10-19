@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import { DeveloperKey, Hevn, IntentRefused, type Hex } from '../src/index.ts';
 
 const [clientId, contactId, amount, address] = process.argv.slice(2);
@@ -17,7 +19,7 @@ try {
       intent: 'client',
       quote: { fromAmount: amount },
     },
-    { idempotencyKey: `example-payout-${contactId}-${amount}` },
+    { idempotencyKey: `example-payout-${randomUUID()}` },
   );
   console.log('payout', prepared.id, receipt.status, receipt.transactionHash ?? '');
 } catch (error) {

@@ -112,6 +112,7 @@ export class IntentVerifier {
         authorization: prepared.authorization,
       });
     }
+
     if (expected.quote) this.quote(prepared.quote, expected.quote);
     if (prepared.authorization === 'debit') {
       if (!expected.debit) throw new IntentRefused('authorization_kind', 'The approval authorizes a debit, and no expected debit was given.');
@@ -119,8 +120,10 @@ export class IntentVerifier {
       this.debit(prepared.debit, expected.debit);
       return decoded;
     }
+
     if (prepared.authorization === 'intent') {
-      if (!expected.intent) throw new IntentRefused('authorization_kind', 'The approval authorizes an intent, and no smart wallet was given to check it against.');
+      if (!expected.intent)
+        throw new IntentRefused('authorization_kind', 'The approval authorizes an intent, and no smart wallet was given to check it against.');
       if (prepared.debit) throw new IntentRefused('authorization_kind', 'An intent approval also carries a debit.');
       this.intent(prepared.intent, decoded.request.body.params.hash, expected.intent);
       return decoded;

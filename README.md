@@ -14,21 +14,21 @@ runtime dependency is `@noble/hashes`, for keccak-256.
 
 ## Documentation
 
-| Topic | Link |
-| --- | --- |
-| Overview | [whitelabel/overview](https://github.com/hevn-inc/docs/blob/main/whitelabel/overview.mdx) |
-| Quickstart, from an empty sandbox account to money on chain | [whitelabel/quickstart](https://github.com/hevn-inc/docs/blob/main/whitelabel/quickstart.mdx) |
-| Developer key: P-256, scopes, IP allowlist, rotation | [whitelabel/developer-key](https://github.com/hevn-inc/docs/blob/main/whitelabel/developer-key.mdx) |
-| Sessions: challenge, token, refresh, `X-Hevn-Account` | [whitelabel/sessions](https://github.com/hevn-inc/docs/blob/main/whitelabel/sessions.mdx) |
-| Signing: what you sign, what HEVN verifies, the confirm retry policy | [whitelabel/signing](https://github.com/hevn-inc/docs/blob/main/whitelabel/signing.mdx) |
-| Conventions: money, ids, idempotency, pagination | [whitelabel/conventions](https://github.com/hevn-inc/docs/blob/main/whitelabel/conventions.mdx) |
-| Payouts | [whitelabel/payouts](https://github.com/hevn-inc/docs/blob/main/whitelabel/payouts.mdx) |
-| Swaps | [whitelabel/swaps](https://github.com/hevn-inc/docs/blob/main/whitelabel/swaps.mdx) |
-| Escrow and escrow actions | [whitelabel/escrow](https://github.com/hevn-inc/docs/blob/main/whitelabel/escrow.mdx), [whitelabel/escrow-actions](https://github.com/hevn-inc/docs/blob/main/whitelabel/escrow-actions.mdx) |
-| Clients, payins, virtual accounts, balances | [whitelabel/clients](https://github.com/hevn-inc/docs/blob/main/whitelabel/clients.mdx), [whitelabel/payins](https://github.com/hevn-inc/docs/blob/main/whitelabel/payins.mdx), [whitelabel/virtual-accounts](https://github.com/hevn-inc/docs/blob/main/whitelabel/virtual-accounts.mdx), [whitelabel/balances-and-transactions](https://github.com/hevn-inc/docs/blob/main/whitelabel/balances-and-transactions.mdx) |
-| Sandbox | [whitelabel/sandbox](https://github.com/hevn-inc/docs/blob/main/whitelabel/sandbox.mdx) |
-| Errors and limits | [reference/errors](https://github.com/hevn-inc/docs/blob/main/whitelabel/reference/errors.mdx), [reference/limits](https://github.com/hevn-inc/docs/blob/main/whitelabel/reference/limits.mdx) |
-| Live OpenAPI, served by the API itself | [sandbox `/dapi/v1/docs`](https://sandbox-api.hevn.finance/dapi/v1/docs), [`/dapi/v1/openapi.json`](https://sandbox-api.hevn.finance/dapi/v1/openapi.json) |
+| Topic                                                                | Link                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Overview                                                             | [whitelabel/overview](https://github.com/hevn-inc/docs/blob/main/whitelabel/overview.mdx)                                                                                                                                                                                                                                                                                                                              |
+| Quickstart, from an empty sandbox account to money on chain          | [whitelabel/quickstart](https://github.com/hevn-inc/docs/blob/main/whitelabel/quickstart.mdx)                                                                                                                                                                                                                                                                                                                          |
+| Developer key: P-256, scopes, IP allowlist, rotation                 | [whitelabel/developer-key](https://github.com/hevn-inc/docs/blob/main/whitelabel/developer-key.mdx)                                                                                                                                                                                                                                                                                                                    |
+| Sessions: challenge, token, refresh, `X-Hevn-Account`                | [whitelabel/sessions](https://github.com/hevn-inc/docs/blob/main/whitelabel/sessions.mdx)                                                                                                                                                                                                                                                                                                                              |
+| Signing: what you sign, what HEVN verifies, the confirm retry policy | [whitelabel/signing](https://github.com/hevn-inc/docs/blob/main/whitelabel/signing.mdx)                                                                                                                                                                                                                                                                                                                                |
+| Conventions: money, ids, idempotency, pagination                     | [whitelabel/conventions](https://github.com/hevn-inc/docs/blob/main/whitelabel/conventions.mdx)                                                                                                                                                                                                                                                                                                                        |
+| Payouts                                                              | [whitelabel/payouts](https://github.com/hevn-inc/docs/blob/main/whitelabel/payouts.mdx)                                                                                                                                                                                                                                                                                                                                |
+| Swaps                                                                | [whitelabel/swaps](https://github.com/hevn-inc/docs/blob/main/whitelabel/swaps.mdx)                                                                                                                                                                                                                                                                                                                                    |
+| Escrow and escrow actions                                            | [whitelabel/escrow](https://github.com/hevn-inc/docs/blob/main/whitelabel/escrow.mdx), [whitelabel/escrow-actions](https://github.com/hevn-inc/docs/blob/main/whitelabel/escrow-actions.mdx)                                                                                                                                                                                                                           |
+| Clients, payins, virtual accounts, balances                          | [whitelabel/clients](https://github.com/hevn-inc/docs/blob/main/whitelabel/clients.mdx), [whitelabel/payins](https://github.com/hevn-inc/docs/blob/main/whitelabel/payins.mdx), [whitelabel/virtual-accounts](https://github.com/hevn-inc/docs/blob/main/whitelabel/virtual-accounts.mdx), [whitelabel/balances-and-transactions](https://github.com/hevn-inc/docs/blob/main/whitelabel/balances-and-transactions.mdx) |
+| Sandbox                                                              | [whitelabel/sandbox](https://github.com/hevn-inc/docs/blob/main/whitelabel/sandbox.mdx)                                                                                                                                                                                                                                                                                                                                |
+| Errors and limits                                                    | [reference/errors](https://github.com/hevn-inc/docs/blob/main/whitelabel/reference/errors.mdx), [reference/limits](https://github.com/hevn-inc/docs/blob/main/whitelabel/reference/limits.mdx)                                                                                                                                                                                                                         |
+| Live OpenAPI, served by the API itself                               | [sandbox `/dapi/v1/docs`](https://sandbox-api.hevn.finance/dapi/v1/docs), [`/dapi/v1/openapi.json`](https://sandbox-api.hevn.finance/dapi/v1/openapi.json)                                                                                                                                                                                                                                                             |
 
 Developer keys are created in the app under **Settings → Partner program → Developer keys**:
 [sandbox.gethevn.com](https://sandbox.gethevn.com) for the sandbox, [app.gethevn.com](https://app.gethevn.com)
@@ -45,10 +45,10 @@ npm install github:hevn-inc/dapi-sdk
 ```ts
 import { DeveloperKey, Hevn } from '@hevn/dapi-sdk';
 
-const key = DeveloperKey.fromEnv();                        // HEVN_KEY_PEM → P-256 PKCS#8 PEM file
+const key = DeveloperKey.fromEnv(); // HEVN_KEY_PEM → P-256 PKCS#8 PEM file
 const hevn = Hevn.connect({ key, email: process.env.HEVN_EMAIL!, environment: 'sandbox' });
 
-const northwind = hevn.actingAs('cl_7YQ2Kf3mN8');           // sends X-Hevn-Account
+const northwind = hevn.actingAs('cl_7YQ2Kf3mN8'); // sends X-Hevn-Account
 const { prepared, receipt } = await northwind.payouts.send(
   { contactId: 'ct_3K9…', amount: '5.00' },
   { debit: { token: 'USDC', amount: '5.00', address: '0x8f3b…' }, intent: 'client' },
@@ -72,6 +72,7 @@ yourself, or use `IntentVerifier` and `DeveloperKey` with your own HTTP stack.
 ## What is verified before anything is signed
 
 **The payload**, in `AuthorizationPayload.decode`:
+
 - It is strict padded base64 of UTF-8 JSON, and the bytes are **canonical**: sorted keys and no
   whitespace, exactly what HEVN produces. This rules out duplicate-key tricks, where the SDK and Privy
   would read different hashes.
@@ -81,6 +82,7 @@ yourself, or use `IntentVerifier` and `DeveloperKey` with your own HTTP stack.
 - The body is a single RPC: `secp256k1_sign {hash}` or `personal_sign {message, encoding: "utf-8"}`.
 
 **The approval**, in `IntentVerifier.approval`:
+
 - `privy-app-id` must be the environment's app, so a sandbox signature can never execute in
   production.
 - `privy-request-expiry` must equal `approval.expiresAt`, be in the future, and fall within the
@@ -92,10 +94,10 @@ nonce. A challenge that asks for anything else, such as a hash, is refused.
 
 **Payouts and swaps**, in `IntentVerifier.coSign`:
 
-| `authorization` | Checked against your expectation |
-| --- | --- |
-| `debit` | `chainId` is the environment's chain. `token` matches. `amount` and `amountAtomic` agree with each other at the token's decimals and with your amount. `address` is your recipient, when you pass one. HEVN does not return the UserOperation, so the `userOpHash` cannot be recomputed and `debit` is the echo to check ([why](https://github.com/hevn-inc/docs/blob/main/whitelabel/signing.mdx#what-the-hash-is)). |
-| `intent` | `params.hash` is the Coinbase Smart Wallet replay-safe hash of `intent.digest` for **your** client's smart wallet on the environment's chain. It must never equal the raw digest. Passing `'client'` reads the wallet from `GET /client` `baseSmartWallet`. You can also pin it yourself. |
+| `authorization` | Checked against your expectation                                                                                                                                                                                                                                                                                                                                                                                      |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `debit`         | `chainId` is the environment's chain. `token` matches. `amount` and `amountAtomic` agree with each other at the token's decimals and with your amount. `address` is your recipient, when you pass one. HEVN does not return the UserOperation, so the `userOpHash` cannot be recomputed and `debit` is the echo to check ([why](https://github.com/hevn-inc/docs/blob/main/whitelabel/signing.mdx#what-the-hash-is)). |
+| `intent`        | `params.hash` is the Coinbase Smart Wallet replay-safe hash of `intent.digest` for **your** client's smart wallet on the environment's chain. It must never equal the raw digest. Passing `'client'` reads the wallet from `GET /client` `baseSmartWallet`. You can also pin it yourself.                                                                                                                             |
 
 A response is refused when its `authorization` kind has no expectation. You can also pin the `quote`:
 `fromAmount`, `toAmount`, the currencies, `minToAmount` and `maxFeeAmount`.
@@ -107,6 +109,7 @@ A response is refused when its `authorization` kind has no expectation. You can 
 
 `confirmUntilSettled` implements the table in
 [Signing → Retrying a confirm](https://github.com/hevn-inc/docs/blob/main/whitelabel/signing.mdx#retrying-a-confirm):
+
 - `202`, network errors, `funding_in_progress` and `bundler_*`: confirm again, with backoff.
 - `already_funded`: success.
 - `funding_attempt_expired`, or `200 failed`: re-open with the **same** `Idempotency-Key` and verify
@@ -117,36 +120,57 @@ Escrow prepares the action again on `410 approval_expired` and `409 approval_con
 
 ## Layout
 
-| File | Contents |
-| --- | --- |
-| `src/key.ts` | `DeveloperKey`: load, generate, sign as DER base64, fingerprint. `PublicKeys`: parse SPKI and verify. `Signatures`: wire-format check and P1363 → DER |
-| `src/payload.ts` | `AuthorizationPayload.decode`, `IntentRefused` |
-| `src/verify.ts` | `IntentVerifier`: login, approval, debit, intent, quote, escrow |
-| `src/http.ts` | `Http` (429 / `Retry-After`), `Session` (challenge → token → refresh), `HevnApiError`, `pollUntil` |
-| `src/client.ts` | `Hevn`: `actingAs`, `confirmUntilSettled`, the `payouts` / `swaps` / `escrow` flows, and thin wrappers for every other `/dapi/v1` route |
-| `src/intents.ts` | Wire types: `Payout`, `Swap`, `EscrowActionResult`, `Approval`, `Debit`, `Intent`, `Expected*` |
-| `src/environment.ts` | `sandbox` / `production`: API base URL, chain id, Privy app id, and USDC / EURC on Base |
+| File                 | Contents                                                                                                                                              |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/key.ts`         | `DeveloperKey`: load, generate, sign as DER base64, fingerprint. `PublicKeys`: parse SPKI and verify. `Signatures`: wire-format check and P1363 → DER |
+| `src/payload.ts`     | `AuthorizationPayload.decode`, `IntentRefused`                                                                                                        |
+| `src/verify.ts`      | `IntentVerifier`: login, approval, debit, intent, quote, escrow                                                                                       |
+| `src/http.ts`        | `Http` (429 / `Retry-After`), `Session` (challenge → token → refresh), `HevnApiError`, `pollUntil`                                                    |
+| `src/client.ts`      | `Hevn`: `actingAs`, `confirmUntilSettled`, the `payouts` / `swaps` / `escrow` flows, and thin wrappers for every other `/dapi/v1` route               |
+| `src/intents.ts`     | Wire types: `Payout`, `Swap`, `EscrowActionResult`, `Approval`, `Debit`, `Intent`, `Expected*`                                                        |
+| `src/environment.ts` | `sandbox` / `production`: API base URL, chain id, Privy app id, and USDC / EURC on Base                                                               |
 
 ## Examples and tests
+
+Every example is a short script for one realistic job, and every one of them is also an e2e test.
+
+| Example                                                     | What it does                                                                                                                                                                                                                 | Docs                                                                                                             |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `login.ts`                                                  | Opens a session with the developer key and lists your clients                                                                                                                                                                | [Sessions](https://github.com/hevn-inc/docs/blob/main/whitelabel/sessions.mdx)                                   |
+| `onboard.ts <cl> [phone] [paper.pdf]`                       | Writes the KYB document (company, people, papers), files the application, approves it as the sandbox reviewer and polls its status                                                                                           | [Onboard a client](https://github.com/hevn-inc/docs/blob/main/whitelabel/onboarding.mdx)                         |
+| `kyb-rfi.ts <cl> [paper.pdf]`                               | After onboarding: the (sandbox) reviewer sends it back with a stale paper and an unreadable value; the client replaces the paper, writes the value onto the upload by hand, completes again and the next attempt is approved | [Onboard a client](https://github.com/hevn-inc/docs/blob/main/whitelabel/onboarding.mdx)                         |
+| `open-rail.ts <cl> [currency] [method] [token]`             | Checks a rail's requirements, opens a virtual account in the client's name and prints its account details                                                                                                                    | [Virtual accounts](https://github.com/hevn-inc/docs/blob/main/whitelabel/virtual-accounts.mdx)                   |
+| `payin.ts <cl> [amount] [currency] [method]`                | Quotes a deposit, prints the payer's instructions, settles it (sandbox) and waits for the credit                                                                                                                             | [Payins](https://github.com/hevn-inc/docs/blob/main/whitelabel/payins.mdx)                                       |
+| `sandbox-wire.ts <cl> [amount]`                             | An unsolicited wire to the client's account details, played by the sandbox                                                                                                                                                   | [Sandbox](https://github.com/hevn-inc/docs/blob/main/whitelabel/sandbox.mdx)                                     |
+| `sandbox-transfer.ts <cl_a> <cl_b> [amount]`                | A faucet credit to A, then an on-chain payout A → B                                                                                                                                                                          | [Quickstart](https://github.com/hevn-inc/docs/blob/main/whitelabel/quickstart.mdx)                               |
+| `payout.ts <cl> <ct> <amount> [0xrecipient]`                | Pays a saved contact, checking the debit before signing                                                                                                                                                                      | [Payouts](https://github.com/hevn-inc/docs/blob/main/whitelabel/payouts.mdx)                                     |
+| `bank-payout.ts <cl> [amount] [settled\|refunded\|failed]`  | Saves a SEPA beneficiary, prices it, pays it, and moves the partner side (sandbox)                                                                                                                                           | [Payouts](https://github.com/hevn-inc/docs/blob/main/whitelabel/payouts.mdx)                                     |
+| `payroll.ts <cl> <run-id> [amount]`                         | Pays two contractors with keys derived from the run, so re-driving a run never pays twice                                                                                                                                    | [What you can build](https://github.com/hevn-inc/docs/blob/main/whitelabel/use-cases.mdx)                        |
+| `ledger.ts <cl> [since] [out dir]`                          | Walks the ledger with a cursor, totals it, exports CSV, a receipt and a statement                                                                                                                                            | [Balances and transactions](https://github.com/hevn-inc/docs/blob/main/whitelabel/balances-and-transactions.mdx) |
+| `escrow.ts <cl_buyer> <cl_seller> <amount>`                 | Opens a deal, authorizes and captures it                                                                                                                                                                                     | [Escrow](https://github.com/hevn-inc/docs/blob/main/whitelabel/escrow.mdx)                                       |
+| `escrow-partial.ts <cl_buyer> <cl_seller> <held> <shipped>` | Captures what shipped and voids the rest back to the buyer                                                                                                                                                                   | [Escrow actions](https://github.com/hevn-inc/docs/blob/main/whitelabel/escrow-actions.mdx)                       |
+| `escrow-refund.ts <cl_buyer> <cl_seller> <amount>`          | Charges the buyer, then refunds from your own wallet                                                                                                                                                                         | [Escrow actions](https://github.com/hevn-inc/docs/blob/main/whitelabel/escrow-actions.mdx)                       |
+| `swap.ts <cl> [from] [to] [amount]`                         | Previews and books a swap between the client's own accounts; refused in the sandbox                                                                                                                                          | [Swaps](https://github.com/hevn-inc/docs/blob/main/whitelabel/swaps.mdx)                                         |
 
 ```bash
 export HEVN_KEY_PEM=./hevn-sandbox.pem HEVN_EMAIL=integrator@example.com   # HEVN_ENV=production for prod
 # HEVN_API_URL=http://localhost:8010/dapi/v1 HEVN_PRIVY_APP_ID=<its Privy app> point everything at a local backend
-node examples/login.ts
-node examples/payout.ts cl_7YQ2Kf3mN8 ct_3K9… 0.50 0x8f3b…
-node examples/escrow.ts cl_sender cl_receiver 0.10
-node examples/sandbox-transfer.ts cl_a cl_b 0.10   # a sandbox faucet credit to A, then a transfer A → B
+node examples/onboard.ts cl_7YQ2Kf3mN8 +13125550142
+node examples/open-rail.ts cl_7YQ2Kf3mN8 EUR sepa
 
 npm test
 npm run typecheck
+npm run format                               # prettier; format:check in CI
 npm run test:e2e                             # runs every example against the live sandbox
 ```
 
 `npm run test:e2e` runs the examples as they are, as child processes, and checks balances through the
 SDK afterwards. The harness lives in `_tests/e2e/harness.ts`. It reads `HEVN_EMAIL` and `HEVN_KEY_PEM`
-from the environment or `./.env`, and `HEVN_KEY_PEM` there may also hold the PEM inline. It runs on the
-first two ready clients of `GET /clients` and moves `0.10` USDC per step, inside the sandbox limits: at most 1
-per payout or escrow, and a faucet that only tops up a wallet holding less than 1.
+from the environment or `./.env`, and `HEVN_KEY_PEM` there may also hold the PEM inline. It reuses the
+first four ready clients of `GET /clients` instead of creating any: the first two for the wallet flows
+(`examples.e2e.ts`), the third as a company and the fourth as its supplier (`business.e2e.ts`). Amounts stay
+inside the sandbox limits: at most 1 per payout or escrow, at most 1 per payin credit, and a faucet that only
+tops up a wallet holding less than 1. The company is funded by its own payins, so the faucet is never asked for it.
 
 The payload and hash vectors in `_tests/fixtures.ts` come from HEVN's own server-side encoder, so a
 change on either side shows up as a failing test.

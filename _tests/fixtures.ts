@@ -25,9 +25,10 @@ export interface PayloadParts {
 }
 
 export function payload(parts: PayloadParts = {}): string {
-  const body = parts.message !== undefined
-    ? { method: 'personal_sign', params: { message: parts.message, encoding: 'utf-8' } }
-    : { method: 'secp256k1_sign', params: { hash: parts.hash ?? USER_OP_HASH } };
+  const body =
+    parts.message !== undefined
+      ? { method: 'personal_sign', params: { message: parts.message, encoding: 'utf-8' } }
+      : { method: 'secp256k1_sign', params: { hash: parts.hash ?? USER_OP_HASH } };
   const headers: Record<string, string> = {
     'privy-app-id': parts.appId ?? SANDBOX.privyAppId,
     'privy-request-expiry': String(parts.expiry ?? NOW + 120_000),

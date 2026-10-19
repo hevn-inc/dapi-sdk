@@ -136,9 +136,7 @@ describe('IntentVerifier.coSign — intent', () => {
   it('refuses the raw digest, another wallet and another chain', () => {
     const intent = { intent: { smartWallet: SMART_WALLET } };
     refuses('intent_mismatch', () => verifier().coSign(intentPayout({ approval: approval({ hash: DIGEST }) }), intent, 120_000));
-    refuses('intent_mismatch', () =>
-      verifier().coSign(intentPayout(), { intent: { smartWallet: '0x9999999999999999999999999999999999999999' } }, 120_000),
-    );
+    refuses('intent_mismatch', () => verifier().coSign(intentPayout(), { intent: { smartWallet: '0x9999999999999999999999999999999999999999' } }, 120_000));
     const mainnet = intentPayout({ approval: approval({ hash: IntentVerifier.replaySafeHash(SMART_WALLET, 8453, DIGEST) }) });
     refuses('intent_mismatch', () => verifier().coSign(mainnet, intent, 120_000));
   });
