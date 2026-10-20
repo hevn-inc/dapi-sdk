@@ -133,6 +133,14 @@ describe('IntentVerifier.coSign — intent', () => {
     verifier().coSign(intentPayout(), { intent: { smartWallet: SMART_WALLET }, quote: { fromAmount: '500', toCurrency: 'EUR', minToAmount: '460' } }, 120_000);
   });
 
+  it('tells the custodial balance from a wallet debit priced in the same currency', () => {
+    const intent = { intent: { smartWallet: SMART_WALLET } };
+    verifier().coSign(intentPayout(), { ...intent, quote: { fromCurrency: 'USD', sourceAccount: 'FDIC_USD' } }, 120_000);
+    const error = refusal(() => verifier().coSign(intentPayout(), { ...intent, quote: { fromCurrency: 'USD', sourceAccount: 'USDC' } }, 120_000));
+    assert.equal(error.code, 'quote_mismatch');
+    assert.equal(error.details.field, 'sourceAccount');
+  });
+
   it('refuses the raw digest, another wallet and another chain', () => {
     const intent = { intent: { smartWallet: SMART_WALLET } };
     refuses('intent_mismatch', () => verifier().coSign(intentPayout({ approval: approval({ hash: DIGEST }) }), intent, 120_000));

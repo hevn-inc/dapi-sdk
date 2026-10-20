@@ -100,7 +100,9 @@ nonce. A challenge that asks for anything else, such as a hash, is refused.
 | `intent`        | `params.hash` is the Coinbase Smart Wallet replay-safe hash of `intent.digest` for **your** client's smart wallet on the environment's chain. It must never equal the raw digest. Passing `'client'` reads the wallet from `GET /client` `baseSmartWallet`. You can also pin it yourself.                                                                                                                             |
 
 A response is refused when its `authorization` kind has no expectation. You can also pin the `quote`:
-`fromAmount`, `toAmount`, the currencies, `minToAmount` and `maxFeeAmount`.
+`fromAmount`, `toAmount`, the currencies, `sourceAccount`, `minToAmount` and `maxFeeAmount`. Pin
+`sourceAccount` rather than `fromCurrency` to tell where a payout is paid from: a `USDC` debit and an
+`FDIC_USD` payout can both be priced in `USD`.
 
 **Escrow**, in `IntentVerifier.escrow`: the verb, `idempotencyKey`, `amount`, `feeBps` and status
 `awaitingSignature` are checked, plus a 60 s `secp256k1_sign` approval.

@@ -54,6 +54,7 @@ export interface AuthorizationRequest<Body extends WalletRpc = WalletRpc> {
 export interface Quote {
   fromAmount: MoneyAmount;
   fromCurrency: string;
+  sourceAccount?: AccountKey | null;
   toAmount: MoneyAmount;
   toCurrency: string;
   rate?: MoneyAmount | null;
@@ -238,6 +239,7 @@ export interface ExpectedDebit {
 export interface ExpectedQuote {
   fromAmount?: MoneyAmount;
   fromCurrency?: string;
+  sourceAccount?: AccountKey;
   toAmount?: MoneyAmount;
   toCurrency?: string;
   minToAmount?: MoneyAmount;

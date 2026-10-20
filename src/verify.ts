@@ -187,6 +187,7 @@ export class IntentVerifier {
       new IntentRefused('quote_mismatch', `quote.${field} is ${String(actual)}, expected ${String(wanted)}.`, { field, actual, expected: wanted });
 
     if (expected.fromCurrency && quote.fromCurrency !== expected.fromCurrency) throw refuse('fromCurrency', quote.fromCurrency, expected.fromCurrency);
+    if (expected.sourceAccount && quote.sourceAccount !== expected.sourceAccount) throw refuse('sourceAccount', quote.sourceAccount, expected.sourceAccount);
     if (expected.toCurrency && quote.toCurrency !== expected.toCurrency) throw refuse('toCurrency', quote.toCurrency, expected.toCurrency);
     if (expected.fromAmount && !Decimal.equal(quote.fromAmount, expected.fromAmount)) throw refuse('fromAmount', quote.fromAmount, expected.fromAmount);
     if (expected.toAmount && !Decimal.equal(quote.toAmount, expected.toAmount)) throw refuse('toAmount', quote.toAmount, expected.toAmount);

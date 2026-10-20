@@ -60,7 +60,7 @@ export function debitPayout(overrides: Partial<Payout> = {}): Payout {
     approval: approval(),
     debit: { address: RECIPIENT, amount: '5.00', amountAtomic: '5000000', token: 'USDC', chainId: SANDBOX.chainId },
     intent: null,
-    quote: { fromAmount: '5.00', fromCurrency: 'USDC', toAmount: '5.00', toCurrency: 'USDC', feeAmount: '0.00' },
+    quote: { fromAmount: '5.00', fromCurrency: 'USDC', sourceAccount: 'USDC', toAmount: '5.00', toCurrency: 'USDC', feeAmount: '0.00' },
     contact: null,
     ...overrides,
   };
@@ -74,7 +74,7 @@ export function intentPayout(overrides: Partial<Payout> = {}): Payout {
     approval: approval({ hash }),
     debit: null,
     intent: { digest: DIGEST, settles: 'message_signature' },
-    quote: { fromAmount: '500.00', fromCurrency: 'USD', toAmount: '462.14', toCurrency: 'EUR', feeAmount: '1.50' },
+    quote: { fromAmount: '500.00', fromCurrency: 'USD', sourceAccount: 'FDIC_USD', toAmount: '462.14', toCurrency: 'EUR', feeAmount: '1.50' },
     ...overrides,
   });
 }
