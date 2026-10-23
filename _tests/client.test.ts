@@ -95,6 +95,48 @@ describe('Hevn', () => {
     assert.equal(calls.length, 1);
   });
 
+  it('links a signed-in account and leaves its payouts to the holder to sign', async () => {
+    const holderSigned = debitPayout({
+      authorization: 'client',
+      approval: null,
+      debit: null,
+    });
+    const { calls, fetchImpl } = fakeApi({
+      ...loginHandlers(),
+      'POST /clients/link': ({ body }) => ({ status: 200, body: { id: 'cl_holder', code: body!.code } }),
+      'POST /payouts': () => ({ status: 201, body: holderSigned }),
+    });
+    const hevn = Hevn.connect({ key, email: EMAIL, environment: 'sandbox', fetch: fetchImpl, now: () => NOW });
+
+    const client = await hevn.clients.link<{ id: string; code: string }>('jwt-code');
+    const { prepared, receipt } = await hevn
+      .actingAs(client.id)
+      .payouts.send({ contactId: 'ct_1', amount: '5.00' }, { debit: { token: 'USDC', amount: '5', address: RECIPIENT } }, { idempotencyKey: 'pay-1' });
+
+    assert.deepEqual(client, { id: 'cl_holder', code: 'jwt-code' });
+    assert.equal(prepared.authorization, 'client');
+    assert.deepEqual(receipt, { id: 'po_1', status: 'awaitingSignature' });
+    assert.deepEqual(
+      calls.map((call) => `${call.method} ${call.path}`),
+      ['POST /auth/challenge', 'POST /auth/token', 'POST /clients/link', 'POST /payouts'],
+    );
+  });
+
+  it('creates a sign-in session for the browser window', async () => {
+    const created = { url: 'https://sandbox.gethevn.com/connect?session=jwt', state: 'nonce-1', expiresAt: '2026-10-23T10:10:00Z' };
+    const { calls, fetchImpl } = fakeApi({
+      ...loginHandlers(),
+      'POST /connect/sessions': () => ({ status: 201, body: created }),
+    });
+    const hevn = Hevn.connect({ key, email: EMAIL, environment: 'sandbox', fetch: fetchImpl, now: () => NOW });
+
+    const issued = await hevn.connect.sessions.create({ action: 'sign', payoutId: 'po_1', redirectUri: 'https://partner.example/cb' });
+
+    assert.deepEqual(issued, created);
+    assert.deepEqual(calls[2].body, { action: 'sign', payoutId: 'po_1', redirectUri: 'https://partner.example/cb' });
+    assert.equal(calls[2].headers['x-hevn-account'], undefined);
+  });
+
   it('prepares, verifies, signs and confirms a payout until it settles', async () => {
     const prepared = debitPayout();
     const { calls, fetchImpl } = fakeApi({

@@ -121,9 +121,9 @@ export class DeveloperKey {
   }
 
   static fromEnv(): DeveloperKey {
-    const path = process.env.HEVN_KEY_PEM;
-    if (!path) throw new KeyFormatError('HEVN_KEY_PEM must point to the developer key PEM file');
-    return DeveloperKey.fromFile(path);
+    const value = process.env.HEVN_KEY_PEM;
+    if (!value) throw new KeyFormatError('HEVN_KEY_PEM must hold the developer key PEM or point to its file');
+    return value.trimStart().startsWith('-----BEGIN') ? DeveloperKey.fromPem(value) : DeveloperKey.fromFile(value);
   }
 
   static generate(): DeveloperKey {

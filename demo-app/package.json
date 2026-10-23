@@ -1,0 +1,24 @@
+{
+  "name": "hevn-neobank-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p 8092",
+    "build": "next build",
+    "start": "next start -p 8092",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hevn/dapi-sdk": "file:..",
+    "next": "15.5.28",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.9.3"
+  }
+}

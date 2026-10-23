@@ -7,6 +7,8 @@ import type {
   Client,
   ClientId,
   CoSignable,
+  ConnectSession,
+  ConnectSessionCreateInput,
   CoSignExpectation,
   EscrowActionInput,
   EscrowActionResult,
@@ -67,6 +69,7 @@ export class Hevn {
   readonly swaps: Swaps;
   readonly escrow: Escrow;
   readonly clients: Clients;
+  readonly connect: Connect;
   readonly contacts: Contacts;
   readonly banks: Banks;
   readonly payins: Payins;
@@ -84,6 +87,7 @@ export class Hevn {
     this.swaps = new Swaps(this);
     this.escrow = new Escrow(this);
     this.clients = new Clients(this);
+    this.connect = new Connect(this);
     this.contacts = new Contacts(this);
     this.banks = new Banks(this);
     this.payins = new Payins(this);
@@ -213,7 +217,7 @@ export class Hevn {
     const expected = await this.expectation(expect);
     for (let attempt = 0; ; attempt += 1) {
       const prepared = await open(idempotencyKey);
-      if (prepared.approval == null && (prepared as { status?: string }).status !== 'awaitingSignature') {
+      if (prepared.authorization === 'client' || (prepared.approval == null && (prepared as { status?: string }).status !== 'awaitingSignature')) {
         return { prepared, receipt: { id: prepared.id, status: (prepared as unknown as Receipt).status } };
       }
       const decoded = this.verifier.coSign(prepared, expected, windowMs);
@@ -245,12 +249,12 @@ export class Clients {
     this.hevn = hevn;
   }
 
-  create<T = Client>(body: Record<string, unknown>, options: { idempotencyKey?: string } = {}): Promise<T> {
-    return this.hevn.post<T>('/clients', body, options);
-  }
-
   list<T = Client>(query?: Query): Promise<Page<T>> {
     return this.hevn.get<Page<T>>('/clients', query);
+  }
+
+  link<T = Client>(code: string, options: { idempotencyKey?: string } = {}): Promise<T> {
+    return this.hevn.post<T>('/clients/link', { code }, options);
   }
 
   current<T = Client>(): Promise<T> {
@@ -275,6 +279,28 @@ export class Clients {
 
   completeKyb<T = unknown>(): Promise<T> {
     return this.hevn.post<T>('/client/kyb/complete');
+  }
+}
+
+export class ConnectSessions {
+  readonly hevn: Hevn;
+
+  constructor(hevn: Hevn) {
+    this.hevn = hevn;
+  }
+
+  create<T = ConnectSession>(body: ConnectSessionCreateInput): Promise<T> {
+    return this.hevn.post<T>('/connect/sessions', body);
+  }
+}
+
+export class Connect {
+  readonly hevn: Hevn;
+  readonly sessions: ConnectSessions;
+
+  constructor(hevn: Hevn) {
+    this.hevn = hevn;
+    this.sessions = new ConnectSessions(hevn);
   }
 }
 

@@ -3,7 +3,7 @@ export type MoneyAmount = string;
 export type ClientId = `cl_${string}`;
 export type AccountKey = 'USDC' | 'EURC' | 'USDC_ARB' | 'FDIC_USD' | (string & {});
 
-export type AuthorizationKind = 'debit' | 'intent';
+export type AuthorizationKind = 'debit' | 'intent' | 'client';
 export type SettlementMode = 'message_signature' | 'order_signature';
 
 export interface Approval {
@@ -141,7 +141,7 @@ export interface Swap extends CoSignable {
   approval: Approval;
 }
 
-export type EscrowVerb = 'authorize' | 'charge' | 'capture' | 'void' | 'refund' | 'reclaim';
+export type EscrowVerb = 'authorize' | 'charge' | 'capture' | 'void' | 'refund';
 export type EscrowAction = EscrowVerb | 'approve' | 'reject';
 export type EscrowActionStatus = 'awaitingSignature' | 'signing' | 'submitted' | 'confirmed' | 'reverted' | 'failed' | 'superseded' | 'dropped';
 
@@ -222,6 +222,20 @@ export interface Client {
   kybStatus?: string;
   baseSmartWallet?: Hex | null;
   [field: string]: unknown;
+}
+
+export type ConnectAction = 'link' | 'sign';
+
+export interface ConnectSessionCreateInput {
+  action: ConnectAction;
+  payoutId?: string;
+  redirectUri: string;
+}
+
+export interface ConnectSession {
+  url: string;
+  state: string;
+  expiresAt: string;
 }
 
 export interface Page<Item> {

@@ -18,7 +18,7 @@ runtime dependency is `@noble/hashes`, for keccak-256.
 | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Overview                                                             | [whitelabel/overview](https://github.com/hevn-inc/docs/blob/main/whitelabel/overview.mdx)                                                                                                                                                                                                                                                                                                                              |
 | Quickstart, from an empty sandbox account to money on chain          | [whitelabel/quickstart](https://github.com/hevn-inc/docs/blob/main/whitelabel/quickstart.mdx)                                                                                                                                                                                                                                                                                                                          |
-| Developer key: P-256, scopes, IP allowlist, rotation                 | [whitelabel/developer-key](https://github.com/hevn-inc/docs/blob/main/whitelabel/developer-key.mdx)                                                                                                                                                                                                                                                                                                                    |
+| Developer key: P-256, IP allowlist, rotation                         | [whitelabel/developer-key](https://github.com/hevn-inc/docs/blob/main/whitelabel/developer-key.mdx)                                                                                                                                                                                                                                                                                                                    |
 | Sessions: challenge, token, refresh, `X-Hevn-Account`                | [whitelabel/sessions](https://github.com/hevn-inc/docs/blob/main/whitelabel/sessions.mdx)                                                                                                                                                                                                                                                                                                                              |
 | Signing: what you sign, what HEVN verifies, the confirm retry policy | [whitelabel/signing](https://github.com/hevn-inc/docs/blob/main/whitelabel/signing.mdx)                                                                                                                                                                                                                                                                                                                                |
 | Conventions: money, ids, idempotency, pagination                     | [whitelabel/conventions](https://github.com/hevn-inc/docs/blob/main/whitelabel/conventions.mdx)                                                                                                                                                                                                                                                                                                                        |
@@ -120,6 +120,62 @@ A response is refused when its `authorization` kind has no expectation. You can 
 Escrow prepares the action again on `410 approval_expired` and `409 approval_consumed`. It then calls
 `sync` on the deal until the action leaves `signing` / `submitted`.
 
+## Sign in with HEVN (browser)
+
+`@hevn/dapi-sdk/browser` runs on your site. The account holder signs in to HEVN in a HEVN window and
+approves their own transfers there, so your developer key never holds their money: a payout for a
+linked account answers with `authorization: "client"` and carries no approval to sign.
+
+Only your server can start the window. It asks HEVN for a short-lived sign-in session, and the browser
+runs the URL it gets back. The window takes nothing else from the URL, so nobody can open it in your
+name or send its result to another site.
+
+```ts
+const session = await hevn.connect.sessions.create({ action: 'link', redirectUri: 'https://your.site/hevn/callback' });
+
+const payout = await hevn.actingAs(clientId).payouts.create({ contactId, amount });
+const signing = await hevn.connect.sessions.create({ action: 'sign', payoutId: payout.id, redirectUri: 'https://your.site/hevn/callback' });
+```
+
+`create` answers `{ url, state, expiresAt }`. The session lasts about ten minutes; `state` is the value
+the window sends back to your `redirectUri`.
+
+```ts
+import { HevnConnect } from '@hevn/dapi-sdk/browser';
+
+button.onclick = async () => {
+  const hevn = HevnConnect.open({ environment: 'sandbox' });
+  const { url } = await (await fetch('/api/hevn/session', { method: 'POST', body: JSON.stringify({ action: 'link' }) })).json();
+  const { code } = await hevn.link(url);
+  await fetch('/api/hevn/link', { method: 'POST', body: JSON.stringify({ code }) });
+};
+
+payButton.onclick = async () => {
+  const hevn = HevnConnect.open({ environment: 'sandbox' });
+  const { url } = await (await fetch('/api/hevn/pay', { method: 'POST' })).json();
+  const { status, payoutId, reference } = await hevn.sign(url);
+};
+```
+
+Your server exchanges the code with `hevn.clients.link(code)` and creates payouts with `X-Hevn-Account` as
+usual; `payouts.send` returns at once for such an account, without signing.
+
+- Configure the window in the HEVN app: Developer console → **Sign-in window**. **Allowed origins**
+  lists the sites a session may return to (`https://…`; `http://localhost:<port>` for development);
+  `sessions.create` refuses any other `redirectUri` with `redirect_uri_not_allowed`. Title, logo,
+  background, accent and light or dark theme brand the window; without them it shows HEVN's own look.
+- A `sign` session needs a payout of an account linked to you that still awaits its holder's
+  signature: otherwise `payout_not_found` or `payout_not_awaiting_signature`.
+- Call `HevnConnect.open()` synchronously inside the click handler, before any `await`, or the browser
+  blocks the window. `link`, `sign` and `run` navigate it once the session URL is there. With
+  `environment` or `appUrl` set, a session URL for another origin is refused with `invalid_session`.
+- The `redirectUri` page calls `HevnConnect.complete()` once. It hands the result back over a
+  `BroadcastChannel` and closes the window; only the result carrying the session's `state` settles the
+  call. A sign-in through Google cuts the window off from your page, so the result never travels
+  through `window.opener`.
+- A refusal rejects with `HevnConnectError` and its `code`: `access_denied`, `not_found`,
+  `already_linked`, `unsupported`, `failed`, `invalid_session`, `popup_blocked`, `timeout` or `aborted`.
+
 ## Layout
 
 | File                 | Contents                                                                                                                                              |
@@ -131,6 +187,7 @@ Escrow prepares the action again on `410 approval_expired` and `409 approval_con
 | `src/client.ts`      | `Hevn`: `actingAs`, `confirmUntilSettled`, the `payouts` / `swaps` / `escrow` flows, and thin wrappers for every other `/dapi/v1` route               |
 | `src/intents.ts`     | Wire types: `Payout`, `Swap`, `EscrowActionResult`, `Approval`, `Debit`, `Intent`, `Expected*`                                                        |
 | `src/environment.ts` | `sandbox` / `production`: API base URL, chain id, Privy app id, and USDC / EURC on Base                                                               |
+| `src/browser.ts`     | `HevnConnect`: the HEVN sign-in window for linking an account and approving its payouts in the browser                                                |
 
 ## Examples and tests
 
