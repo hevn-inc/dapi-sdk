@@ -314,6 +314,12 @@ select {
   max-width: 380px;
 }
 
+.signin-or {
+  align-self: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 .signin .fineprint {
   max-width: 46ch;
 }

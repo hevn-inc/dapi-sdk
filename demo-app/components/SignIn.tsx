@@ -10,8 +10,8 @@ export function SignIn({ appUrl, onSignedIn }: { appUrl: string; onSignedIn: () 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const start = async (event: FormEvent) => {
-    event.preventDefault();
+  // Without an email the HEVN window signs in with Google; with one it sends a one-time code there.
+  const start = async (email?: string) => {
     setError(null);
     let popup;
     try {
@@ -23,7 +23,6 @@ export function SignIn({ appUrl, onSignedIn }: { appUrl: string; onSignedIn: () 
     setBusy(true);
     try {
       const { url } = await api.startSignIn();
-      // HEVN emails a one-time code to this address; the person types it in the HEVN window, not here.
       const result = await popup.run(url, { email });
       if (!result.code) throw new Error('The HEVN window returned no sign-in code.');
       await api.link(result.code, result.state);
@@ -44,13 +43,23 @@ export function SignIn({ appUrl, onSignedIn }: { appUrl: string; onSignedIn: () 
         <p className="lead">
           Hold USDC and EURC, receive bank transfers to your own account details and pay anyone with a wallet. Every transfer is approved by you, in HEVN.
         </p>
-        <form className="signin-form" onSubmit={start}>
+        <form
+          className="signin-form"
+          onSubmit={(event: FormEvent) => {
+            event.preventDefault();
+            void start(email);
+          }}
+        >
           <label className="field">
             <span>Work email</span>
             <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.com" autoComplete="email" required />
           </label>
           <button className="button primary large" disabled={busy}>
-            {busy ? 'Waiting for HEVN…' : 'Continue with HEVN'}
+            {busy ? 'Waiting for HEVN…' : 'Continue with email'}
+          </button>
+          <span className="signin-or">or</span>
+          <button type="button" className="button large" onClick={() => void start()} disabled={busy}>
+            Continue with Google
           </button>
         </form>
         {error && (
@@ -59,8 +68,8 @@ export function SignIn({ appUrl, onSignedIn }: { appUrl: string; onSignedIn: () 
           </p>
         )}
         <p className="fineprint">
-          HEVN sends a code to this email. You enter it in the HEVN window, so this site never signs in for you and cannot move your money without your
-          approval.
+          You sign in to HEVN in its own window, with a code sent to your email or with Google. This site never signs in for you and cannot move your money
+          without your approval.
         </p>
       </section>
       <aside className="signin-note" aria-hidden="true">
