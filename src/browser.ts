@@ -7,6 +7,15 @@ export interface HevnConnectOptions {
   signal?: AbortSignal;
 }
 
+/** Options for one run of the HEVN window. */
+export interface HevnConnectRunOptions {
+  /**
+   * The email the person typed in your own UI. The HEVN window then skips its sign-in choice, sends a one-time code
+   * to this address and asks only for that code. The address can't be changed in the window.
+   */
+  email?: string;
+}
+
 export interface LinkResult {
   code: string;
 }
@@ -29,8 +38,10 @@ export class HevnConnectError extends Error {
 
 export class HevnConnect {
   static readonly CHANNEL = 'hevn-connect';
+  static readonly EMAIL_PARAM = 'login_hint';
   static readonly WINDOW = 'hevn-connect';
-  static readonly FEATURES = 'popup,width=460,height=720';
+  static readonly WIDTH = 460;
+  static readonly HEIGHT = 720;
   static readonly TIMEOUT_MS = 10 * 60_000;
   static readonly APP_URLS: Readonly<Record<EnvironmentName, string>> = {
     sandbox: 'https://sandbox.gethevn.com',
@@ -38,9 +49,18 @@ export class HevnConnect {
   };
 
   static open(options: HevnConnectOptions = {}): HevnConnectWindow {
-    const popup = window.open('about:blank', HevnConnect.WINDOW, HevnConnect.FEATURES);
+    const popup = window.open('about:blank', HevnConnect.WINDOW, HevnConnect.features());
     if (!popup) throw new HevnConnectError('popup_blocked', 'The browser blocked the HEVN window. Call open() inside a click handler.');
     return new HevnConnectWindow(popup, options);
+  }
+
+  /** Popup features that center the window over the page that opens it, kept on screen. */
+  static features(): string {
+    const width = Math.min(HevnConnect.WIDTH, window.screen.availWidth);
+    const height = Math.min(HevnConnect.HEIGHT, window.screen.availHeight);
+    const left = Math.max(0, Math.round(window.screenX + (window.outerWidth - width) / 2));
+    const top = Math.max(0, Math.round(window.screenY + (window.outerHeight - height) / 2));
+    return `popup,width=${width},height=${height},left=${left},top=${top}`;
   }
 
   static complete(location: Location = window.location): boolean {
@@ -67,8 +87,8 @@ export class HevnConnectWindow {
     this.appOrigin = appUrl ? new URL(appUrl).origin : null;
   }
 
-  async link(sessionUrl: string): Promise<LinkResult> {
-    const result = await this.run(sessionUrl);
+  async link(sessionUrl: string, options: HevnConnectRunOptions = {}): Promise<LinkResult> {
+    const result = await this.run(sessionUrl, options);
     return { code: HevnConnectWindow.required(result, 'code') };
   }
 
@@ -85,7 +105,7 @@ export class HevnConnectWindow {
     this.popup.close();
   }
 
-  run(sessionUrl: string): Promise<Record<string, string>> {
+  run(sessionUrl: string, options: HevnConnectRunOptions = {}): Promise<Record<string, string>> {
     let url: URL;
     let state: string;
     try {
@@ -97,6 +117,8 @@ export class HevnConnectWindow {
     if (this.appOrigin && url.origin !== this.appOrigin) {
       return Promise.reject(new HevnConnectError('invalid_session', `The session URL does not point at ${this.appOrigin}.`));
     }
+    const email = options.email?.trim();
+    if (email) url.searchParams.set(HevnConnect.EMAIL_PARAM, email);
     const channel = new BroadcastChannel(HevnConnect.CHANNEL);
     return new Promise<Record<string, string>>((resolve, reject) => {
       const settle = (done: () => void) => {

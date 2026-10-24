@@ -146,7 +146,7 @@ import { HevnConnect } from '@hevn/dapi-sdk/browser';
 button.onclick = async () => {
   const hevn = HevnConnect.open({ environment: 'sandbox' });
   const { url } = await (await fetch('/api/hevn/session', { method: 'POST', body: JSON.stringify({ action: 'link' }) })).json();
-  const { code } = await hevn.link(url);
+  const { code } = await hevn.link(url, { email: emailInput.value });
   await fetch('/api/hevn/link', { method: 'POST', body: JSON.stringify({ code }) });
 };
 
@@ -162,8 +162,12 @@ usual; `payouts.send` returns at once for such an account, without signing.
 
 - Configure the window in the HEVN app: Developer console → **Sign-in window**. **Allowed origins**
   lists the sites a session may return to (`https://…`; `http://localhost:<port>` for development);
-  `sessions.create` refuses any other `redirectUri` with `redirect_uri_not_allowed`. Title, logo,
-  background, accent and light or dark theme brand the window; without them it shows HEVN's own look.
+  `sessions.create` refuses any other `redirectUri` with `redirect_uri_not_allowed`. To brand the window
+  with your title, logo and colours, write to HEVN; without them it shows HEVN's own look.
+- Pass `email` to `link` (or `run`) when you already ask for it in your own UI. The window then sends a
+  one-time code to that address and asks only for the code; the address can't be changed there. The
+  code is typed in the HEVN window, never in your page: it signs the person in to their own wallet.
+  Without `email` the window lets the person sign in with Google.
 - A `sign` session needs a payout of an account linked to you that still awaits its holder's
   signature: otherwise `payout_not_found` or `payout_not_awaiting_signature`.
 - Call `HevnConnect.open()` synchronously inside the click handler, before any `await`, or the browser

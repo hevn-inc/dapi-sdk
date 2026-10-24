@@ -21,6 +21,11 @@ function browser(popup: FakePopup | null) {
         return popup;
       },
       close: () => undefined,
+      screen: { availWidth: 1920, availHeight: 1080 },
+      screenX: 100,
+      screenY: 50,
+      outerWidth: 1200,
+      outerHeight: 900,
       setTimeout,
       clearTimeout,
     },
@@ -53,6 +58,7 @@ describe('HevnConnect', () => {
     const hevn = HevnConnect.open({ environment: 'sandbox' });
     assert.equal(opened.length, 1);
     assert.equal(opened[0]![0], 'about:blank');
+    assert.equal(opened[0]![2], 'popup,width=460,height=720,left=470,top=140');
 
     const url = session('nonce-1234');
     const linked = hevn.link(url);
@@ -79,6 +85,20 @@ describe('HevnConnect', () => {
     await navigated(popup);
     callback('https://partner.example/cb?error=access_denied&state=sign-2');
     await assert.rejects(refused, (error: unknown) => error instanceof HevnConnectError && error.code === 'access_denied');
+  });
+
+  it('hands the email typed in the partner UI to the window as a sign-in hint', async () => {
+    const popup = new FakePopup();
+    browser(popup);
+    const hevn = HevnConnect.open({ environment: 'sandbox' });
+
+    const linked = hevn.link(session('nonce-mail'), { email: ' jane@acme.example ' });
+    const opened = new URL(await navigated(popup));
+    assert.equal(opened.searchParams.get('login_hint'), 'jane@acme.example');
+    assert.ok(opened.searchParams.get('session'));
+
+    callback('https://partner.example/hevn/callback?code=jwt-code&state=nonce-mail');
+    assert.deepEqual(await linked, { code: 'jwt-code' });
   });
 
   it('refuses a session without a nonce or for another HEVN origin without navigating', async () => {
