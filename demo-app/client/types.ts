@@ -108,16 +108,3 @@ export interface Transaction {
 export interface TransactionPage {
   items: Transaction[];
 }
-
-export interface LogEntry {
-  seq: number;
-  at: string;
-  source: 'server' | 'browser';
-  method: string;
-  path: string;
-  account: string | null;
-  status: number;
-  durationMs: number;
-  request: unknown;
-  response: unknown;
-}

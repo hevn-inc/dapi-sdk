@@ -2,8 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Backend } from './backend';
-
 export interface Resource<T> {
   data: T | null;
   error: unknown;
@@ -11,7 +9,8 @@ export interface Resource<T> {
   reload: () => Promise<T | null>;
 }
 
-export function useResource<T>(path: string): Resource<T> {
+/** Loads on mount and on `reload()`. Pass a stable function, such as one from `api`. */
+export function useResource<T>(load: () => Promise<T>): Resource<T> {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +19,7 @@ export function useResource<T>(path: string): Resource<T> {
   const reload = useCallback(async () => {
     setLoading(true);
     try {
-      const fresh = await Backend.get<T>(path);
+      const fresh = await load();
       if (alive.current) {
         setData(fresh);
         setError(null);
@@ -32,7 +31,7 @@ export function useResource<T>(path: string): Resource<T> {
     } finally {
       if (alive.current) setLoading(false);
     }
-  }, [path]);
+  }, [load]);
 
   useEffect(() => {
     alive.current = true;

@@ -305,6 +305,15 @@ select {
   max-width: 46ch;
 }
 
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  width: 100%;
+  max-width: 380px;
+}
+
 .signin .fineprint {
   max-width: 46ch;
 }

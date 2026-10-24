@@ -3,9 +3,9 @@
 import { HevnConnect } from '@hevn/dapi-sdk/browser';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 
-import { Backend } from '@/lib/client/backend';
-import { Format } from '@/lib/client/format';
-import type { AccountBalance, CreatedPayout, Payout } from '@/lib/client/types';
+import { api } from '@/client/api';
+import { Format } from '@/client/format';
+import type { AccountBalance, Payout } from '@/client/types';
 
 import { StatusBadge } from './StatusBadge';
 
@@ -31,7 +31,8 @@ export function SendToWallet({ appUrl, available, onSettled }: { appUrl: string;
 
   const watch = (payoutId: string, until: number) => {
     if (timer.current) window.clearTimeout(timer.current);
-    Backend.get<Payout>(`/api/payouts/${encodeURIComponent(payoutId)}`)
+    api
+      .payout(payoutId)
       .then((fresh) => {
         setPayout(fresh);
         if (FINAL.has(fresh.status)) {
@@ -43,7 +44,7 @@ export function SendToWallet({ appUrl, available, onSettled }: { appUrl: string;
           setStage('Still on its way. Check your activity in a minute.');
         }
       })
-      .catch((failure) => setError(Backend.describe(failure)));
+      .catch((failure) => setError(api.describe(failure)));
   };
 
   const send = async (event: FormEvent) => {
@@ -53,25 +54,25 @@ export function SendToWallet({ appUrl, available, onSettled }: { appUrl: string;
     try {
       popup = HevnConnect.open({ appUrl });
     } catch (failure) {
-      setError(Backend.describe(failure));
+      setError(api.describe(failure));
       return;
     }
     setBusy(true);
     setPayout(null);
     setStage('Preparing the transfer…');
     try {
-      const created = await Backend.post<CreatedPayout>('/api/payouts', { address: address.trim(), amount: amount.trim() });
+      const created = await api.sendToWallet(address.trim(), amount.trim());
       setPayout(created.payout);
       setStage('Approve the transfer in the HEVN window.');
       const signed = await popup.sign(created.url);
-      Backend.note('sign', signed);
+      api.log.note('sign', signed);
       setStage('Approved. Sending…');
       watch(created.payout.id, Date.now() + WATCH_MS);
     } catch (failure) {
       popup.close();
-      Backend.note('sign failed', { reason: failure instanceof Error ? failure.message : String(failure) });
+      api.log.note('sign failed', { reason: api.describe(failure) });
       setStage(null);
-      setError(Backend.describe(failure));
+      setError(api.describe(failure));
     } finally {
       setBusy(false);
     }

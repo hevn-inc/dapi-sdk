@@ -1,10 +1,13 @@
 export type Tone = 'good' | 'wait' | 'bad' | 'plain';
 
+type Amount = string | number | null | undefined;
+
+/** How the page writes amounts, addresses, dates and HEVN status codes. */
 export class Format {
-  static readonly GOOD = new Set(['approved', 'active', 'settled', 'completed', 'success']);
-  static readonly WAIT = new Set(['pending', 'preparing', 'awaitingSignature', 'submitted', 'rfi', 'processing', 'in_review', 'working']);
-  static readonly BAD = new Set(['rejected', 'failed', 'closed', 'suspended', 'refunded', 'cancelled']);
-  static readonly STATUS: Record<string, string> = {
+  private static readonly GOOD = new Set(['approved', 'active', 'settled', 'completed', 'success']);
+  private static readonly WAIT = new Set(['pending', 'preparing', 'awaitingSignature', 'submitted', 'rfi', 'processing', 'in_review', 'working']);
+  private static readonly BAD = new Set(['rejected', 'failed', 'closed', 'suspended', 'refunded', 'cancelled']);
+  private static readonly STATUS: Record<string, string> = {
     awaitingSignature: 'Waiting for your approval',
     submitted: 'On its way',
     settled: 'Delivered',
@@ -36,12 +39,11 @@ export class Format {
     return Format.STATUS[status] ?? Format.label(status);
   }
 
-  static money(value: string | number | null | undefined, digits = 2): string {
-    const number = Number(value ?? 0);
-    return number.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: Math.max(digits, 6) });
+  static money(value: Amount, digits = 2): string {
+    return Number(value ?? 0).toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: Math.max(digits, 6) });
   }
 
-  static usd(value: string | number | null | undefined): string {
+  static usd(value: Amount): string {
     return Number(value ?? 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
   }
 
@@ -57,9 +59,5 @@ export class Format {
 
   static date(value: string): string {
     return new Date(value).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  }
-
-  static token(account: string): string {
-    return account.split('_')[0] ?? account;
   }
 }

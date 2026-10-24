@@ -1,9 +1,9 @@
 'use client';
 
-import { Backend } from '@/lib/client/backend';
-import { Format } from '@/lib/client/format';
-import type { TransactionPage } from '@/lib/client/types';
-import type { Resource } from '@/lib/client/useResource';
+import { api } from '@/client/api';
+import { Format } from '@/client/format';
+import type { TransactionPage } from '@/client/types';
+import type { Resource } from '@/client/useResource';
 
 import { StatusBadge } from './StatusBadge';
 
@@ -21,7 +21,7 @@ export function Activity({ activity }: { activity: Resource<TransactionPage> }) 
           {activity.loading ? 'Refreshing…' : 'Refresh'}
         </button>
       </div>
-      {activity.error ? <p className="notice bad">{Backend.describe(activity.error)}</p> : null}
+      {activity.error ? <p className="notice bad">{api.describe(activity.error)}</p> : null}
       {activity.loading && !activity.data ? (
         <div className="skeleton-block" />
       ) : activity.error && !activity.data ? null : items.length === 0 ? (

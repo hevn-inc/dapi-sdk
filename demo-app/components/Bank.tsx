@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { Backend } from '@/lib/client/backend';
+import { api } from '@/client/api';
 
 import { Dashboard } from './Dashboard';
 import { SignIn } from './SignIn';
@@ -10,14 +10,10 @@ import { SignIn } from './SignIn';
 export function Bank({ signedIn: initial, appUrl }: { signedIn: boolean; appUrl: string }) {
   const [signedIn, setSignedIn] = useState(initial);
 
-  useEffect(() => {
-    const out = () => setSignedIn(false);
-    window.addEventListener(Backend.SIGNED_OUT, out);
-    return () => window.removeEventListener(Backend.SIGNED_OUT, out);
-  }, []);
+  useEffect(() => api.onSignedOut(() => setSignedIn(false)), []);
 
   const signOut = useCallback(async () => {
-    await Backend.post('/api/auth/logout').catch(() => undefined);
+    await api.signOut().catch(() => undefined);
     setSignedIn(false);
   }, []);
 

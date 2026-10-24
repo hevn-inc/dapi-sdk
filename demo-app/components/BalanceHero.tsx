@@ -2,10 +2,10 @@
 
 import { useState, type FormEvent } from 'react';
 
-import { Backend } from '@/lib/client/backend';
-import { Format } from '@/lib/client/format';
-import type { Balance } from '@/lib/client/types';
-import type { Resource } from '@/lib/client/useResource';
+import { api } from '@/client/api';
+import { Format } from '@/client/format';
+import type { Balance } from '@/client/types';
+import type { Resource } from '@/client/useResource';
 
 export function BalanceHero({ balance, onDeposited }: { balance: Resource<Balance>; onDeposited: () => void }) {
   const [amount, setAmount] = useState('0.50');
@@ -19,12 +19,12 @@ export function BalanceHero({ balance, onDeposited }: { balance: Resource<Balanc
     setBusy(true);
     setMessage(null);
     try {
-      await Backend.post('/api/deposit', { amount: amount.trim() });
+      await api.deposit(amount.trim());
       setMessage({ tone: 'good', text: `Added ${amount.trim()} test USDC. It can take a few seconds to show up.` });
       onDeposited();
       window.setTimeout(onDeposited, 6000);
     } catch (failure) {
-      setMessage({ tone: 'bad', text: Backend.describe(failure) });
+      setMessage({ tone: 'bad', text: api.describe(failure) });
     } finally {
       setBusy(false);
     }
@@ -61,7 +61,7 @@ export function BalanceHero({ balance, onDeposited }: { balance: Resource<Balanc
             Wallet on Base {Format.short(data.baseSmartWallet, 8, 6)}
           </p>
         )}
-        {balance.error ? <p className="notice bad on-dark">{Backend.describe(balance.error)}</p> : null}
+        {balance.error ? <p className="notice bad on-dark">{api.describe(balance.error)}</p> : null}
       </div>
 
       <dl className="hero-pockets">

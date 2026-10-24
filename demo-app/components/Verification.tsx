@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 
-import { Backend } from '@/lib/client/backend';
-import { Format } from '@/lib/client/format';
-import type { Kyb } from '@/lib/client/types';
-import type { Resource } from '@/lib/client/useResource';
+import { api } from '@/client/api';
+import { Format } from '@/client/format';
+import type { Kyb } from '@/client/types';
+import type { Resource } from '@/client/useResource';
 
 import { StatusBadge } from './StatusBadge';
 
@@ -24,10 +24,10 @@ export function Verification({ kyb, onChanged }: { kyb: Resource<Kyb>; onChanged
     setError(null);
     setMissing([]);
     try {
-      const result = await Backend.post<Kyb>('/api/kyb/run');
+      const result = await api.runKyb();
       if (result.ready === false) setMissing(result.missing ?? []);
     } catch (failure) {
-      setError(Backend.describe(failure));
+      setError(api.describe(failure));
     } finally {
       setBusy(false);
       onChanged();
@@ -56,7 +56,7 @@ export function Verification({ kyb, onChanged }: { kyb: Resource<Kyb>; onChanged
       </ol>
 
       {needed.length > 0 && <p className="notice wait">Still needed: {needed.map((item) => Format.label(item)).join(', ')}</p>}
-      {kyb.error ? <p className="notice bad">{Backend.describe(kyb.error)}</p> : null}
+      {kyb.error ? <p className="notice bad">{api.describe(kyb.error)}</p> : null}
       {error && (
         <p className="notice bad" role="alert">
           {error}

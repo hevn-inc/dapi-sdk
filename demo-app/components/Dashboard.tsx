@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-import type { Balance, Kyb, Me, RailList, TransactionPage } from '@/lib/client/types';
-import { useResource } from '@/lib/client/useResource';
+import { api } from '@/client/api';
+import { useResource } from '@/client/useResource';
 
 import { Activity } from './Activity';
 import { ApiLog } from './ApiLog';
@@ -13,11 +13,11 @@ import { SendToWallet } from './SendToWallet';
 import { Verification } from './Verification';
 
 export function Dashboard({ appUrl, onSignOut }: { appUrl: string; onSignOut: () => void }) {
-  const me = useResource<Me>('/api/me');
-  const balance = useResource<Balance>('/api/balance');
-  const kyb = useResource<Kyb>('/api/kyb');
-  const banks = useResource<RailList>('/api/banks');
-  const activity = useResource<TransactionPage>('/api/transactions');
+  const me = useResource(api.me);
+  const balance = useResource(api.balance);
+  const kyb = useResource(api.kyb);
+  const banks = useResource(api.banks);
+  const activity = useResource(api.transactions);
   const [logOpen, setLogOpen] = useState(false);
 
   const moneyMoved = () => {
@@ -28,7 +28,7 @@ export function Dashboard({ appUrl, onSignOut }: { appUrl: string; onSignOut: ()
   return (
     <div className={`shell ${logOpen ? 'log-open' : ''}`}>
       <header className="topbar">
-        <span className="wordmark">mini HEVN</span>
+        <span className="wordmark">Acme Pay</span>
         <div className="topbar-who">
           {me.data ? (
             <>

@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
-import { Backend } from '@/lib/client/backend';
-import { Format } from '@/lib/client/format';
-import type { Rail, RailList, Requirements } from '@/lib/client/types';
-import type { Resource } from '@/lib/client/useResource';
+import { api } from '@/client/api';
+import { Format } from '@/client/format';
+import type { Rail, RailList, Requirements } from '@/client/types';
+import type { Resource } from '@/client/useResource';
 
 import { StatusBadge } from './StatusBadge';
 
@@ -41,9 +41,10 @@ export function BankAccounts({ banks, kybStatus }: { banks: Resource<RailList>; 
     setChecking(true);
     setRequirements(null);
     setError(null);
-    Backend.get<Requirements>(`/api/banks/${encodeURIComponent(choice)}/requirements`)
+    api
+      .bankRequirements(choice)
       .then((found) => current && setRequirements(found))
-      .catch((failure) => current && setError(Backend.describe(failure)))
+      .catch((failure) => current && setError(api.describe(failure)))
       .finally(() => current && setChecking(false));
     return () => {
       current = false;
@@ -60,10 +61,10 @@ export function BankAccounts({ banks, kybStatus }: { banks: Resource<RailList>; 
     setOpening(true);
     setError(null);
     try {
-      await Backend.post(`/api/banks/${encodeURIComponent(choice)}`);
+      await api.openBank(choice);
       await reload();
     } catch (failure) {
-      setError(Backend.describe(failure));
+      setError(api.describe(failure));
     } finally {
       setOpening(false);
     }
@@ -89,7 +90,7 @@ export function BankAccounts({ banks, kybStatus }: { banks: Resource<RailList>; 
           ))}
         </ul>
       )}
-      {banks.error ? <p className="notice bad">{Backend.describe(banks.error)}</p> : null}
+      {banks.error ? <p className="notice bad">{api.describe(banks.error)}</p> : null}
 
       {closed.length > 0 && (
         <div className="open-account">

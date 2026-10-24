@@ -9,7 +9,7 @@ const text = Hanken_Grotesk({ subsets: ['latin'], variable: '--font-text', displ
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'Mini HEVN',
+  title: 'Acme Pay',
   description: 'A small business bank built on the HEVN whitelabel API.',
 };
 

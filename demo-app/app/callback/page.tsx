@@ -12,7 +12,7 @@ export default function Callback() {
 
   return (
     <main className="callback">
-      <span className="wordmark">mini HEVN</span>
+      <span className="wordmark">Acme Pay</span>
       <p>{message}</p>
     </main>
   );
